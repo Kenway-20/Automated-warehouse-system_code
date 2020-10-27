@@ -1,19 +1,19 @@
 clc;clear;close all
-range=4;  %Á¢·½Ìå»õ¼ÜÈÎÒâ·½ÏòµÄÏä×Ó¸ñÊı
-goods=24;  %»õÎïÊıÁ¿
+range=4;  %ç«‹æ–¹ä½“è´§æ¶ä»»æ„æ–¹å‘çš„ç®±å­æ ¼æ•°
+goods=24;  %è´§ç‰©æ•°é‡
 
-NIND=40;   %ÖÖÈºÊıÄ¿
-MAXGEN=200;  %ÒÅ´«´úÊı
-px=0.7;  %½»²æ¸ÅÂÊ
-pm=0.01;  %±äÒì¸ÅÂÊ
-NVAR=3*goods;  %È¾É«Ìå³¤¶È
-PRECI=15;   %±äÁ¿¶ş½øÖÆÎ»Êı
-GGAP=0.9;   %´ú¹µ
+NIND=40;   
+MAXGEN=200;  
+px=0.7;  
+pm=0.01;  
+NVAR=3*goods;  
+PRECI=15;   
+GGAP=0.9;   
 trace=zeros(MAXGEN,2);  %
 %tracepbj=zeros(40,MAXGEN);
 %BaseV=zeros(1,NVAR)+5;
-FieldD=[rep([PRECI],[1,NVAR]);rep([1;range],[1,NVAR]);rep([1;0;1;1],[1,NVAR])];  %
-Chrom=crtbp(NIND,NVAR*PRECI);  %Éú³ÉÖÖÈº³¤¶ÈÎªNIND£¬¸öÌå³¤¶ÈÎªMVAR*PRECIµÄ¶ş½øÖÆÖÖÈº
+FieldD=[rep([PRECI],[1,NVAR]);rep([1;range],[1,NVAR]);rep([1;0;1;1],[1,NVAR])];  
+Chrom=crtbp(NIND,NVAR*PRECI);  
 %Chrom=crtbp(NIND,NVAR,BaseV);
 gen=0;
 w1=0.2;w2=0.2;w3=0.6;
@@ -24,22 +24,22 @@ matrix01=bs2rv(Chrom,FieldD);
 ObjV=w1*fun01(matrix01)+w2*fun02(matrix01)+w3*fun03(matrix01);
 FitnV=zeros(NIND,1);
 while gen<MAXGEN,
-    FitnV=ranking(ObjV);  %¼ÆËãÊÊÓ¦¶È
+    FitnV=ranking(ObjV);  %è®¡ç®—é€‚åº”åº¦
     %FitnV=1/(ObjV+1);
-    SelCh=select('sus',Chrom,FitnV,GGAP);  %Ñ¡Ôñ¸ß¼¶¸öÌå
-    SelCh=recombin('xovsp',SelCh,px);    %½»²æÖØ×é
-    SelCh=mut(SelCh,pm);   %±äÒì
+    SelCh=select('sus',Chrom,FitnV,GGAP);  %é€‰æ‹©é«˜çº§ä¸ªä½“
+    SelCh=recombin('xovsp',SelCh,px);    %äº¤å‰é‡ç»„
+    SelCh=mut(SelCh,pm);   %å˜å¼‚
     %ObjVSel=1rv/(w1*fun01(bs2rv(SelCh,FieldD))+w2*fun02(bs2rv(SelCh,FieldD))+w3*fun03(bs2rv(SelCh,FieldD))+1);
     matrix01=bs2rv(SelCh,FieldD);
     %matrix01=SelCh;
     ObjVSel=w1*fun01(matrix01)+w2*fun02(matrix01)+w3*fun03(matrix01);
-    [Chrom, ObjV]=reins(Chrom,SelCh,1,1,ObjV,ObjVSel);  %ÖØ²åÈë£¬½«²¿·Ö×Ó´úÓë¸¸´úÌæ»»
+    [Chrom, ObjV]=reins(Chrom,SelCh,1,1,ObjV,ObjVSel);  %é‡æ’å…¥ï¼Œå°†éƒ¨åˆ†å­ä»£ä¸çˆ¶ä»£æ›¿æ¢
     matrix01=bs2rv(Chrom,FieldD);
     gen=gen+1;
     trace(gen,1)=min(ObjV);
     trace(gen,2)=sum(ObjV)/length(ObjV);
 end
-%%È¡Õû
+%%å–æ•´
     for j=1:goods
        xyz=matrix01(1,(3*j-2):(3*j));
        x=xyz(1);y=xyz(2);z=xyz(3);
@@ -57,8 +57,8 @@ end
            end
        end
     end
-%%ÕÒ³öÖØ¸´Êı¾İ
-%±ä³ÉÁĞĞÎÊ½
+%%æ‰¾å‡ºé‡å¤æ•°æ®
+%å˜æˆåˆ—å½¢å¼
 for j=1:goods
     xyz=record(1,(3*j-2):(3*j));
     record01(j,:)=xyz;
@@ -71,17 +71,17 @@ for j=1:goods-1
     for i=j+1:goods
        comxyz=record02(i,:);
        if comxyz==xyz
-           num=num+1;  %ÖØ¸´µÄ¸öÊı£¨³ıÈ¥±¾Éí£©
+           num=num+1;  %é‡å¤çš„ä¸ªæ•°ï¼ˆé™¤å»æœ¬èº«ï¼‰
            record02(i,1:3)=[rand rand rand];
        end
     end
     if num>0
-        hang=hang+1;  %ÓĞÖØ¸´Ôò¼ÇÂ¼
+        hang=hang+1;  %æœ‰é‡å¤åˆ™è®°å½•
         repeat(hang,1:3)=xyz;
         repeat(hang,4)=num;
     end
 end
-%%´¦ÀíÖØ¸´Êı¾İ
+%%å¤„ç†é‡å¤æ•°æ®
 record03=record01;
 m=size(repeat,1);
 final01=zeros(1,3);
@@ -96,7 +96,7 @@ for i=1:m
                     xyz1=[x y z];aa=0;
                     for j=1:size(record03,1)
                         buer=isequal(record03(j,:),xyz1);
-                        if buer==1  %1±íÊ¾ÏàµÈ                       
+                        if buer==1  %1è¡¨ç¤ºç›¸ç­‰                       
                         aa=aa+1; 
                         end   
                     end
@@ -139,7 +139,7 @@ grid on
 figure
 plot(trace(:,1));hold on;
 plot(trace(:,2),'-.');grid;
-legend('½âµÄ±ä»¯','ÖÖÈº¾ùÖµµÄ±ä»¯');
+legend('è§£çš„å˜åŒ–','ç§ç¾¤å‡å€¼çš„å˜åŒ–');
 %matrix02=floor(matrix01);
 for i=1:size(X,1)
     [x,y,z]=meshgrid(X(i)-1:X(i),Y(i)-1:Y(i),Z(i)-1:Z(i));
